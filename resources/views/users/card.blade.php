@@ -3,11 +3,11 @@
         <h2 class="card-title">{{ $user->name }}</h2>
     </div>
 
-    {{-- フォロー／アンフォローボタン --}}
-    @include('user_follow.follow_button')
-    
     <figure>
         {{-- ユーザのメールアドレスをもとにGravatarを取得して表示 --}}
         <img src="{{ Gravatar::get($user->email, ['size' => 500]) }}" alt="">
     </figure>
 </div>
+{{-- フォロー／アンフォローボタン --}}
+    @include('user_follow.follow_button')
+    
