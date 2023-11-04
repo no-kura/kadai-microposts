@@ -14,4 +14,9 @@
         Followers
         <div class="badge ml-1">{{ $user->followers_count }}</div>
     </a>
+    {{-- お気に入り一覧タブ --}}
+    <a href="{{ route('users.fovorites', $user->id) }}" class="tab tab-lifted grow {{ Request::routeIs('users.fovorites') ? 'tab-active' : '' }}">
+        Fovorites
+        <div class="badge ml-1">{{ $user->fovorites_count }}</div>
+    </a>
 </div>

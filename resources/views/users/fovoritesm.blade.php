@@ -1,7 +1,7 @@
 <div class="mt-4">
-    @if (isset($microposts))
+    @if (isset($fovorites))
         <ul class="list-none">
-            @foreach ($microposts as $micropost)
+            @foreach ($fovorites as $micropost)
                 <li class="flex items-start gap-x-2 mb-4">
                     {{-- 投稿の所有者のメールアドレスをもとにGravatarを取得して表示 --}}
                     <div class="avatar">
@@ -25,6 +25,8 @@
                                     @include('fovorites.fovorites_button')
                             
                             @if (Auth::id() == $micropost->user_id)
+                                
+                            
                                 {{-- 投稿削除ボタンのフォーム --}}
                                 <form method="POST" action="{{ route('microposts.destroy', $micropost->id) }}">
                                     @csrf
@@ -41,6 +43,6 @@
             @endforeach
         </ul>
         {{-- ページネーションのリンク --}}
-        {{ $microposts->links() }}
+        {{ $fovorites->links() }}
     @endif
 </div>

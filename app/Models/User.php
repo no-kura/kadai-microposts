@@ -42,8 +42,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
-    
-
     /**
      * このユーザが所有する投稿。（ Micropostモデルとの関係を定義）
      */
@@ -52,13 +50,12 @@ class User extends Authenticatable
         return $this->hasMany(Micropost::class);
     }
     
-    
       /**
      * このユーザに関係するモデルの件数をロードする。
      */
     public function loadRelationshipCounts()
     {
-        $this->loadCount(['microposts','followings','followers']);
+        $this->loadCount(['microposts','followings','followers','fovorites']);
     }
     
      /**
@@ -77,7 +74,6 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'user_follow', 'follow_id', 'user_id')->withTimestamps();
     }
     
-    
      /**
      * $userIdで指定されたユーザをフォローする。
      *
@@ -95,8 +91,6 @@ class User extends Authenticatable
             $this->followings()->attach($userId);
             return true;
         }
-        
-        
     }
     
     /**
@@ -118,7 +112,7 @@ class User extends Authenticatable
         }
     }
     
-    /**
+     /**
      * 指定された$userIdのユーザをこのユーザがフォロー中であるか調べる。フォロー中ならtrueを返す。
      * 
      * @param  int $userId
@@ -144,5 +138,67 @@ class User extends Authenticatable
     }
     
     
+     
+    /*　ここから追加　お気に入り機能用　*/
+    
+    /**
+     * このユーザがお気に入り登録した記事。（Micropostモデルとの関係を定義）
+     */
+    public function fovorites()
+    {
+        return $this->belongsToMany(Micropost::class, 'fovorites', 'user_id', 'micropost_id')->withTimestamps();
+    }    
+    
+    
+      /**
+     * $micropostIdで指定された記事をお気に入り登録する。
+     *
+     * @param  int  $userId
+     * @return bool
+     */
+    public function onfovorites($micropostId)
+    {
+        $exist = $this->is_fovorites($micropostId);
+       
+       if ($exist) {
+            return false;
+        } else {
+            $this->fovorites()->attach($micropostId);
+            return true;
+        }
+    
+    }
+    
+    /**
+     * $micropostIdで指定された記事をお気に入り解除する。
+     * 
+     * @param  int $usereId
+     * @return bool
+     */
+    public function unfovorites($micropostId)
+    {
+        $exist = $this->is_fovorites($micropostId);
+        
+        if ($exist) {
+            $this->fovorites()->detach($micropostId);
+            return true;
+        } else {
+            return false;
+        }
+      
+    }
+    
+    /**
+     * 指定された$userIdの記事をこのユーザがお気に入り登録済であるか調べる。登録済みならtrueを返す。
+     * 
+     * @param  int $userId
+     * @return bool
+     */
+    public function is_fovorites($micropostId)
+    {
+        return $this->fovorites()->where('micropost_id', $micropostId)->exists();
+    }
+    
+   
 }
-
+    
